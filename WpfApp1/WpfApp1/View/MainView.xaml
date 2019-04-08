@@ -1,0 +1,142 @@
+﻿<UserControl x:Class="WpfApp1.View.MainView"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfApp1.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="1000" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVis"/>
+    </UserControl.Resources>
+    <UserControl.Triggers>
+        <!-- animation to open the door -->
+        <EventTrigger SourceName="BtnOpen" RoutedEvent="Button.Click">
+            <BeginStoryboard Name="sbOpen">
+                <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BtnOpen" Storyboard.TargetProperty="(UIElement.Visibility)" >
+                        <DiscreteObjectKeyFrame KeyTime="0:0:2" Value="{x:Static Visibility.Collapsed}"/>
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BtnClose" Storyboard.TargetProperty="(UIElement.Visibility)" >
+                        <DiscreteObjectKeyFrame KeyTime="0:0:2" Value="{x:Static Visibility.Visible}"/>
+                    </ObjectAnimationUsingKeyFrames>
+                    <DoubleAnimation 
+                        Storyboard.TargetName="SkDoorTransform" 
+                        Storyboard.TargetProperty="AngleY" 
+                        From="0" To="15" Duration="0:0:2" />
+                    <DoubleAnimation 
+                        Storyboard.TargetName="ScDoorTransform" 
+                        Storyboard.TargetProperty="ScaleX" 
+                        From="1" To="0.75" Duration="0:0:2" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+
+        <!-- animation to close the door -->
+        <EventTrigger SourceName="BtnClose" RoutedEvent="Button.Click">
+            <BeginStoryboard Name="sbClose">
+                <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BtnOpen" Storyboard.TargetProperty="(UIElement.Visibility)" >
+                        <DiscreteObjectKeyFrame KeyTime="0:0:2" Value="{x:Static Visibility.Visible}"/>
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BtnClose" Storyboard.TargetProperty="(UIElement.Visibility)" >
+                        <DiscreteObjectKeyFrame KeyTime="0:0:2" Value="{x:Static Visibility.Collapsed}"/>
+                    </ObjectAnimationUsingKeyFrames>
+                    <DoubleAnimation 
+                        Storyboard.TargetName="SkDoorTransform" 
+                        Storyboard.TargetProperty="AngleY" 
+                        From="15" To="0" Duration="0:0:2" />
+                    <DoubleAnimation 
+                        Storyboard.TargetName="ScDoorTransform" 
+                        Storyboard.TargetProperty="ScaleX" 
+                        From="0.75" To="1" Duration="0:0:2" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <Grid>
+
+        <!-- inside magnentron -->
+        <Border HorizontalAlignment="Left"  Width="600" Height="550" Background="DeepPink" BorderBrush="Black" BorderThickness="5px" Margin="50,50,0,0">
+            <Border HorizontalAlignment="Left" Width="489" BorderBrush="Black" BorderThickness="5px" Background="Orange" Margin="49.667,49.667,0,44.333"/>
+        </Border>
+        <!-- magnentron transformation -->
+        <Border HorizontalAlignment="Left" Width="600" Height="550" BorderBrush="Black" BorderThickness="5px" Margin="50,50,0,0">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <SkewTransform x:Name="SkDoorTransform"  AngleX="0" AngleY="0"/>
+                    <ScaleTransform x:Name="ScDoorTransform" ScaleX="1" />
+                </TransformGroup>
+            </Border.RenderTransform>
+            <Grid>
+                <Grid.RowDefinitions>
+                   <RowDefinition Height="25"></RowDefinition>
+                    <RowDefinition Height="25"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="25"></RowDefinition>
+                    <RowDefinition Height="25"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25"></ColumnDefinition>
+                    <ColumnDefinition Width="25"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="25"></ColumnDefinition>
+                    <ColumnDefinition Width="25"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid Background="White" Grid.RowSpan="5" Grid.Row="0" Grid.Column="0"/>
+                <Grid Background="White" Grid.RowSpan="5" Grid.Row="0" Grid.Column="4"/>
+                <Grid Background="White" Grid.ColumnSpan="5" Grid.Row="0" Grid.Column="0"/> 
+                <Grid Background="White" Grid.ColumnSpan="5" Grid.Row="4" Grid.Column="0"/>
+                <Grid Background="Green" Grid.RowSpan="3" Grid.Row="1" Grid.Column="1"/>
+                <Grid Background="Green" Grid.RowSpan="3" Grid.Row="1" Grid.Column="3"/>
+                <Grid Background="Green" Grid.ColumnSpan="3" Grid.Row="1" Grid.Column="1"/>
+                <Grid Background="Green" Grid.ColumnSpan="3" Grid.Row="3" Grid.Column="1"/>
+                <!--<Grid Background="Green" Margin="25"/> -->
+                <Grid Background="Gainsboro" Grid.Row="2" Grid.Column="2" Visibility="{Binding MicrowaveState.SwitchBackground, Converter={StaticResource boolToVis}}"/>
+                <Grid Background="LightGoldenrodYellow" Grid.Row="2" Grid.Column="2" Opacity="0.5"  Visibility="{Binding MicrowaveState.SwitchLamp, Converter={StaticResource boolToVis}}"/>
+            </Grid>
+        </Border>
+        <!-- magnentron buttons -->
+        <Border HorizontalAlignment="Left" Width="300" Height="550" BorderBrush="Black" BorderThickness="0,5,5,5" Margin="650,50,0,0">
+
+            <Grid Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Background="Black" Foreground="LawnGreen" FontSize="28" TextAlignment="Center" Margin="20" Height="50" Width="150" Padding="0" >11:22</TextBlock>
+                <UniformGrid Rows="4" Margin="50,0" Columns="3" Grid.Row="1">
+                    <Button Content="1" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="2" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="3" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="4" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="5" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="6" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="7" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="8" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="9" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="on" Command="{Binding StartCommand}" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="20"/>
+                    <Button Content="0" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="24"/>
+                    <Button Content="off" Command="{Binding OffCommand}" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="18"/>
+                </UniformGrid>
+
+                <UniformGrid Rows="2" Margin="50,0" Columns="2" Grid.Row="2">
+                    <Button Content="start" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="18"/>
+                    <Button Content="clear" Background="black" BorderBrush="Black" Height="50" Margin="5" FontSize="18"/>
+                    <Grid>
+                        <Button x:Name="BtnOpen" Command="{Binding OpenDoorCommand}" Background="black" BorderBrush="Black" Height="50"  Margin="5,5.333,-87.667,5.333" FontSize="18"/>
+                        <Button x:Name="BtnClose" Command="{Binding CloseDoorCommand}" Background="black" BorderBrush="Black" Height="50"  Margin="5,5.333,-87.667,5.333" FontSize="18" Visibility="Collapsed"/>
+                    </Grid>
+                </UniformGrid>
+
+            </Grid>
+
+        </Border>
+    </Grid>
+
+</UserControl>
+
